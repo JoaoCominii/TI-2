@@ -1,48 +1,70 @@
 package com.ti2cc;
 
+import java.util.Scanner;
+
 public class Principal {
-	
-	public static void main(String[] args) {
-		
-		DAO dao = new DAO();
-		
-		dao.conectar();
+    
+    public static void main(String[] args) {
+        DAO dao = new DAO();
+        dao.conectar();
 
-		
-		//Inserir um elemento na tabela
-		Usuario usuario = new Usuario(11, "pablo", "pablo",'M');
-		if(dao.inserirUsuario(usuario) == true) {
-			System.out.println("Inserção com sucesso -> " + usuario.toString());
-		}
-		
-		//Mostrar usuários do sexo masculino		
-		System.out.println("==== Mostrar usuários do sexo masculino === ");
-		Usuario[] usuarios = dao.getUsuariosMasculinos();
-		for(int i = 0; i < usuarios.length; i++) {
-			System.out.println(usuarios[i].toString());
-		}
+        Scanner input = new Scanner(System.in);
+        int opcao = 0;
 
-		//Atualizar usuário
-		usuario.setSenha("nova senha");
-		dao.atualizarUsuario(usuario);
+        while(opcao != 5) {
+            System.out.println("=== Menu ===");
+            System.out.println("1 - Listar");
+            System.out.println("2 - Inserir");
+            System.out.println("3 - Excluir");
+            System.out.println("4 - Atualizar");
+            System.out.println("5 - Sair");
+            System.out.print("Opção: ");
+            opcao = input.nextInt();
 
-		//Mostrar usuários do sexo masculino
-		System.out.println("==== Mostrar usuários === ");
-		usuarios = dao.getUsuarios();
-		for(int i = 0; i < usuarios.length; i++) {
-			System.out.println(usuarios[i].toString());
-		}
-		
-		//Excluir usuário
-		dao.excluirUsuario(usuario.getCodigo());
-		
-		//Mostrar usuários
-		usuarios = dao.getUsuarios();
-		System.out.println("==== Mostrar usuários === ");		
-		for(int i = 0; i < usuarios.length; i++) {
-			System.out.println(usuarios[i].toString());
-		}
-		
-		dao.close();
-	}
+            switch(opcao) {
+                case 1: // Listar
+                    Carro[] carros = dao.getCarros();
+                    for(Carro c : carros) {
+                        System.out.println(c.toString());
+                    }
+                    break;
+                case 2: // Inserir
+                    System.out.print("Marca: ");
+                    String marca = input.next();
+                    System.out.print("Modelo: ");
+                    String modelo = input.next();
+                    System.out.print("Ano: ");
+                    int ano = input.nextInt();
+                    Carro carro = new Carro(-1, marca, modelo, ano);
+                    dao.inserirCarro(carro);
+                    break;
+                case 3: // Excluir
+                    System.out.print("ID do carro a ser excluído: ");
+                    int id = input.nextInt();
+                    dao.excluirCarro(id);
+                    break;
+                case 4: // Atualizar
+                    System.out.print("ID do carro a ser atualizado: ");
+                    id = input.nextInt();
+                    System.out.print("Nova marca: ");
+                    marca = input.next();
+                    System.out.print("Novo modelo: ");
+                    modelo = input.next();
+                    System.out.print("Novo ano: ");
+                    ano = input.nextInt();
+                    carro = new Carro(id, marca, modelo, ano);
+                    dao.atualizarCarro(carro);
+                    break;
+                case 5: // Sair
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida.");
+                    break;
+            }
+        }
+
+        dao.close();
+        input.close();
+    }
 }
